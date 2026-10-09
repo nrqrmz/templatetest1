@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { Navigate } from 'react-router-dom'
@@ -27,12 +27,24 @@ export default function HomePage() {
     formState: { errors, isSubmitting },
   } = useForm<FormValues>({ resolver: zodResolver(schema) })
 
+  // Supabase puts auth errors (e.g. an expired email link) in the URL hash.
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.hash.replace(/^#/, ''))
+    const description = params.get('error_description')
+    if (description) {
+      toast.error(description)
+      history.replaceState(null, '', window.location.pathname + window.location.search)
+    }
+  }, [])
+
   if (loading) return null
   if (session) return <Navigate to="/applications" replace />
 
   async function onSubmit(values: FormValues) {
     if (mode === 'signup') {
-      const { data, error } = await supabase.auth.signUp(values)
+      // The email confirmation link (if enabled in Supabase) returns to this same site.
+      const emailRedirectTo = `${window.location.origin}${import.meta.env.BASE_URL}`
+      const { data, error } = await supabase.auth.signUp({ ...values, options: { emailRedirectTo } })
       if (error) return void toast.error(error.message)
       toast.success(data.session ? 'Account created' : 'Account created. Check your email to continue.')
     } else {
