@@ -9,6 +9,8 @@ export interface Application {
   status: Status
   applied_on: string
   notes: string | null
+  /** Order inside its Kanban column (lower = higher up). */
+  sort_order: number
   created_at: string
 }
 

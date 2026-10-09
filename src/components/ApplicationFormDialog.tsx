@@ -50,7 +50,9 @@ export function ApplicationFormDialog({ open, onOpenChange, application, onSaved
   }, [open, application, reset])
 
   async function onSubmit(values: ApplicationValues) {
-    const row = { ...values, notes: values.notes.trim() || null }
+    const row: Record<string, unknown> = { ...values, notes: values.notes.trim() || null }
+    // Moving to another status puts the card at the top of its new column.
+    if (application && values.status !== application.status) row.sort_order = -Date.now() / 1000
     // user_id is not sent: the database fills it in with auth.uid().
     const { error } = application
       ? await supabase.from('applications').update(row).eq('id', application.id)
