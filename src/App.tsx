@@ -1,19 +1,19 @@
-import { Link, Outlet, Route, Routes } from 'react-router-dom'
+import { Outlet, Route, Routes } from 'react-router-dom'
 
+import { Navbar } from '@/components/Navbar'
+import { RequireAuth } from '@/components/RequireAuth'
+import { Toaster } from '@/components/ui/sonner'
+import { AuthProvider } from '@/lib/auth'
+import ApplicationDetailPage from '@/pages/ApplicationDetailPage'
+import ApplicationsPage from '@/pages/ApplicationsPage'
 import HomePage from '@/pages/HomePage'
-import ItemPage from '@/pages/ItemPage'
 import NotFoundPage from '@/pages/NotFoundPage'
+import TasksPage from '@/pages/TasksPage'
 
 function Layout() {
   return (
     <div className="min-h-screen">
-      <header className="border-b">
-        <div className="mx-auto flex h-14 max-w-4xl items-center px-4">
-          <Link to="/" className="font-semibold">
-            My App
-          </Link>
-        </div>
-      </header>
+      <Navbar />
       <main className="mx-auto max-w-4xl px-4 py-8">
         <Outlet />
       </main>
@@ -21,15 +21,22 @@ function Layout() {
   )
 }
 
-// All routes live here. The pages below are examples: replace them with your own.
+// All routes live here.
 export default function App() {
   return (
-    <Routes>
-      <Route element={<Layout />}>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/items/:id" element={<ItemPage />} />
-        <Route path="*" element={<NotFoundPage />} />
-      </Route>
-    </Routes>
+    <AuthProvider>
+      <Toaster />
+      <Routes>
+        <Route element={<Layout />}>
+          <Route path="/" element={<HomePage />} />
+          <Route element={<RequireAuth />}>
+            <Route path="/applications" element={<ApplicationsPage />} />
+            <Route path="/applications/:id" element={<ApplicationDetailPage />} />
+            <Route path="/tasks" element={<TasksPage />} />
+          </Route>
+          <Route path="*" element={<NotFoundPage />} />
+        </Route>
+      </Routes>
+    </AuthProvider>
   )
 }
