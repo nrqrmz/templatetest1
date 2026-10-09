@@ -1,15 +1,19 @@
 import { useCallback, useEffect, useState } from 'react'
+import { ArrowLeft, CalendarDays, Pencil, Plus, Trash2 } from 'lucide-react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { toast } from 'sonner'
 
 import { ApplicationFormDialog } from '@/components/ApplicationFormDialog'
+import { CompanyAvatar } from '@/components/CompanyAvatar'
 import { StatusBadge } from '@/components/StatusBadge'
 import { TaskFormDialog } from '@/components/TaskFormDialog'
 import { TaskRow } from '@/components/TaskRow'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { statusStyles } from '@/lib/status'
 import { supabase } from '@/lib/supabase'
 import type { Application, Task } from '@/lib/types'
+import { cn } from '@/lib/utils'
 
 export default function ApplicationDetailPage() {
   const { id } = useParams()
@@ -63,28 +67,33 @@ export default function ApplicationDetailPage() {
   }
 
   return (
-    <div className="space-y-6">
-      <Link to="/applications" className="text-sm text-muted-foreground hover:text-foreground">
-        ← Applications
+    <div className="mx-auto max-w-3xl space-y-6">
+      <Link to="/applications" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
+        <ArrowLeft className="size-4" /> Applications
       </Link>
-      <Card>
-        <CardHeader className="flex flex-row items-start justify-between gap-4">
-          <div className="space-y-1">
+      <Card className="relative overflow-hidden animate-in fade-in slide-in-from-bottom-2 duration-500">
+        <div className={cn('absolute inset-x-0 top-0 h-1.5 bg-gradient-to-r', statusStyles[application.status].bar)} />
+        <CardHeader className="flex flex-row items-start gap-4">
+          <CompanyAvatar name={application.company} className="size-14 text-base" />
+          <div className="min-w-0 flex-1 space-y-1">
             <CardTitle className="text-xl">{application.position}</CardTitle>
-            <p className="text-muted-foreground">
-              {application.company} · applied {application.applied_on}
+            <p className="text-muted-foreground">{application.company}</p>
+            <p className="flex items-center gap-1.5 text-sm text-muted-foreground">
+              <CalendarDays className="size-4" /> Applied {application.applied_on}
             </p>
           </div>
           <StatusBadge status={application.status} />
         </CardHeader>
         <CardContent className="space-y-4">
-          {application.notes && <p className="whitespace-pre-wrap text-sm">{application.notes}</p>}
+          {application.notes && (
+            <p className="whitespace-pre-wrap rounded-xl bg-muted p-4 text-sm">{application.notes}</p>
+          )}
           <div className="flex gap-2">
             <Button variant="outline" size="sm" onClick={() => setEditing(true)}>
-              Edit
+              <Pencil /> Edit
             </Button>
             <Button variant="destructive" size="sm" onClick={remove}>
-              Delete
+              <Trash2 /> Delete
             </Button>
           </div>
         </CardContent>
@@ -93,8 +102,8 @@ export default function ApplicationDetailPage() {
       <section className="space-y-3">
         <div className="flex items-center justify-between">
           <h2 className="text-lg font-semibold">Tasks</h2>
-          <Button size="sm" onClick={() => setAddingTask(true)}>
-            New task
+          <Button variant="brand" size="sm" onClick={() => setAddingTask(true)}>
+            <Plus /> New task
           </Button>
         </div>
         {tasks.length === 0 ? (

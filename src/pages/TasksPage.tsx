@@ -33,7 +33,7 @@ export default function TasksPage() {
   }, [load])
 
   return (
-    <div className="space-y-6">
+    <div className="mx-auto max-w-3xl space-y-6">
       <div className="space-y-1">
         <h1 className="text-2xl font-bold tracking-tight">Tasks</h1>
         <p className="text-sm text-muted-foreground">
@@ -41,7 +41,7 @@ export default function TasksPage() {
         </p>
       </div>
       {tasks === null ? (
-        <Skeleton className="h-16 w-full" />
+        <Skeleton className="h-16 w-full rounded-xl" />
       ) : tasks.length === 0 ? (
         <p className="text-muted-foreground">No tasks yet.</p>
       ) : (

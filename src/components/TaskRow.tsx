@@ -1,4 +1,5 @@
 import { useState, type ReactNode } from 'react'
+import { Pencil, Trash2 } from 'lucide-react'
 import { toast } from 'sonner'
 
 import { TaskFormDialog } from '@/components/TaskFormDialog'
@@ -31,11 +32,13 @@ export function TaskRow({ task, subtitle, onChanged }: Props) {
     onChanged()
   }
 
+  const overdue = !task.done && task.due_date !== null && task.due_date < new Date().toLocaleDateString('en-CA')
+
   return (
-    <div className="flex items-center gap-3 rounded-md border p-3">
+    <div className="flex items-center gap-3 rounded-xl border bg-card p-3 shadow-card transition-shadow hover:shadow-card-hover">
       <input
         type="checkbox"
-        className="size-4 shrink-0 accent-primary"
+        className="size-5 shrink-0 cursor-pointer accent-primary"
         checked={task.done}
         onChange={(event) => toggle(event.target.checked)}
         aria-label={`Mark "${task.title}" as ${task.done ? 'not done' : 'done'}`}
@@ -45,15 +48,17 @@ export function TaskRow({ task, subtitle, onChanged }: Props) {
           {task.title}
         </p>
         <p className="truncate text-xs text-muted-foreground">
-          {task.due_date ? `Due ${task.due_date}` : 'No due date'}
+          <span className={cn(overdue && 'font-medium text-destructive')}>
+            {task.due_date ? `${overdue ? 'Overdue · ' : 'Due '}${task.due_date}` : 'No due date'}
+          </span>
           {subtitle}
         </p>
       </div>
-      <Button variant="ghost" size="sm" onClick={() => setEditing(true)}>
-        Edit
+      <Button variant="ghost" size="icon" onClick={() => setEditing(true)} aria-label="Edit task">
+        <Pencil />
       </Button>
-      <Button variant="ghost" size="sm" onClick={remove}>
-        Delete
+      <Button variant="ghost" size="icon" onClick={remove} aria-label="Delete task">
+        <Trash2 />
       </Button>
       <TaskFormDialog open={editing} onOpenChange={setEditing} task={task} onSaved={onChanged} />
     </div>
