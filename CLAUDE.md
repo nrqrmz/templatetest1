@@ -52,3 +52,9 @@ All code, comments, commit messages and UI text must be in English.
 Job Tracker: users sign up with email/password and manage their job applications and tasks.
 Tables `applications` and `tasks` (see `supabase/migrations/`) are protected by RLS per user.
 Routes: `/` (sign in/up), `/dashboard` (stats, Recharts), `/applications`, `/applications/:id`, `/tasks`; all except `/` require sign-in.
+
+## Look and feel
+Indigo/violet theme defined by the color tokens in `src/index.css` (light and dark; the `dark`
+class on `<html>` is toggled by `ThemeToggle`). Use the tokens (`bg-primary`, `text-muted-foreground`...)
+instead of hard-coded colors. Status colors live in `src/lib/status.ts`. The main call-to-action
+button uses `<Button variant="brand">`.

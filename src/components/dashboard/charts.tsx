@@ -1,10 +1,17 @@
-import { Bar, BarChart, CartesianGrid, LabelList, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
+import { Bar, BarChart, CartesianGrid, Cell, LabelList, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
-// One series, one hue: identity comes from the axis labels, so no legend is needed.
-// Blue from the validated reference palette (light / dark steps), set as a CSS variable.
-const chartColor = '[--chart:#2a78d6] dark:[--chart:#3987e5]'
+// Brand indigo for the weekly chart (6.3:1 on the light card, 5.9:1 on the dark card).
+// The status chart reuses the status colors used across the app; every bar is also labeled
+// with its name and value, and a table view exists, so color is never the only signal.
+const chartColor = '[--chart:#4f46e5] dark:[--chart:#818cf8]'
+const statusColor: Record<string, string> = {
+  Applied: '#0ea5e9',
+  Interviewing: '#f59e0b',
+  Offer: '#10b981',
+  Rejected: '#f43f5e',
+}
 
 const tick = { fill: 'var(--muted-foreground)', fontSize: 12 }
 const tooltipStyle = {
@@ -66,6 +73,9 @@ export function StatusChart({ data }: { data: Point[] }) {
             formatter={(value) => [value, 'Applications']}
           />
           <Bar dataKey="count" fill="var(--chart)" radius={[0, 4, 4, 0]} barSize={18}>
+            {data.map((d) => (
+              <Cell key={d.label} fill={statusColor[d.label] ?? 'var(--chart)'} />
+            ))}
             <LabelList dataKey="count" position="right" fill="var(--foreground)" fontSize={12} />
           </Bar>
         </BarChart>

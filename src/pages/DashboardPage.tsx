@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { Activity, Briefcase, ListChecks, Send, TrendingUp, Trophy } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { toast } from 'sonner'
 
@@ -50,7 +51,10 @@ export default function DashboardPage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold tracking-tight">Dashboard</h1>
+      <div>
+        <h1 className="text-2xl font-bold tracking-tight">Dashboard</h1>
+        <p className="text-sm text-muted-foreground">How your job search is going.</p>
+      </div>
 
       {stats.total === 0 ? (
         <p className="text-muted-foreground">
@@ -59,16 +63,30 @@ export default function DashboardPage() {
       ) : (
         <>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            <StatCard label="Total applications" value={stats.total} />
-            <StatCard label="Active" value={stats.active} hint="Applied or interviewing" />
+            <StatCard index={0} icon={Briefcase} tone="indigo" label="Total applications" value={stats.total} />
+            <StatCard index={1} icon={Activity} tone="sky" label="Active" value={stats.active} hint="Applied or interviewing" />
             <StatCard
+              index={2}
+              icon={TrendingUp}
+              tone="violet"
               label="Progress rate"
-              value={percent(stats.progressRate)}
+              value={stats.progressRate === null ? null : Math.round(stats.progressRate * 100)}
+              suffix="%"
               hint="Interviewing or offer, out of all applications"
             />
-            <StatCard label="Offers" value={stats.offers} hint={`${percent(stats.offerRate)} of all applications`} />
-            <StatCard label="Sent in the last 30 days" value={stats.last30} />
             <StatCard
+              index={3}
+              icon={Trophy}
+              tone="emerald"
+              label="Offers"
+              value={stats.offers}
+              hint={`${percent(stats.offerRate)} of all applications`}
+            />
+            <StatCard index={4} icon={Send} tone="fuchsia" label="Sent in the last 30 days" value={stats.last30} />
+            <StatCard
+              index={5}
+              icon={ListChecks}
+              tone={stats.overdue > 0 ? 'rose' : 'amber'}
               label="Open tasks"
               value={stats.openTasks}
               hint={stats.overdue > 0 ? `${stats.overdue} overdue` : 'None overdue'}
