@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
+import { BarChart3, BellRing, FolderKanban } from 'lucide-react'
 import { Navigate } from 'react-router-dom'
 import { toast } from 'sonner'
 import { z } from 'zod'
@@ -11,6 +12,12 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { useAuth } from '@/lib/auth'
 import { supabase } from '@/lib/supabase'
+
+const features = [
+  { icon: FolderKanban, title: 'Everything in one place', text: 'Company, role, status and notes for every application.' },
+  { icon: BellRing, title: 'Never miss a follow-up', text: 'Add tasks with due dates and spot what is overdue.' },
+  { icon: BarChart3, title: 'See your progress', text: 'A dashboard shows where your search stands.' },
+]
 
 const schema = z.object({
   email: z.string().min(1, 'Email is required').email('Enter a valid email'),
@@ -57,16 +64,39 @@ export default function HomePage() {
   const isSignUp = mode === 'signup'
 
   return (
-    <div className="mx-auto max-w-md space-y-6">
-      <div className="space-y-2 text-center">
-        <h1 className="text-3xl font-bold tracking-tight">Job Tracker</h1>
-        <p className="text-muted-foreground">Keep track of your job applications and to-dos.</p>
-      </div>
-      <Card>
+    <div className="grid items-center gap-10 py-4 lg:grid-cols-2 lg:gap-16 lg:py-12">
+      <section className="order-2 space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-500 lg:order-1">
+        <div className="space-y-4">
+          <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">
+            Track every application.{' '}
+            <span className="bg-gradient-to-r from-indigo-600 to-fuchsia-600 bg-clip-text text-transparent dark:from-indigo-300 dark:to-pink-300">
+              Land the offer.
+            </span>
+          </h1>
+          <p className="max-w-md text-lg text-muted-foreground">
+            One calm place for your job search: applications, follow-ups and progress.
+          </p>
+        </div>
+        <ul className="space-y-4">
+          {features.map(({ icon: Icon, title, text }) => (
+            <li key={title} className="flex items-start gap-3">
+              <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-secondary text-secondary-foreground">
+                <Icon className="size-5" />
+              </span>
+              <div>
+                <p className="font-medium">{title}</p>
+                <p className="text-sm text-muted-foreground">{text}</p>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <Card className="order-1 animate-in fade-in slide-in-from-bottom-2 duration-500 lg:order-2 lg:mx-auto lg:w-full lg:max-w-md">
         <CardHeader>
-          <CardTitle>{isSignUp ? 'Create an account' : 'Sign in'}</CardTitle>
+          <CardTitle className="text-xl">{isSignUp ? 'Create your account' : 'Welcome back'}</CardTitle>
           <CardDescription>
-            {isSignUp ? 'Use your email and a password.' : 'Welcome back.'}
+            {isSignUp ? 'Use your email and a password.' : 'Sign in to see your applications.'}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -86,7 +116,7 @@ export default function HomePage() {
               />
               {errors.password && <p className="text-sm text-destructive">{errors.password.message}</p>}
             </div>
-            <Button type="submit" className="w-full" disabled={isSubmitting}>
+            <Button type="submit" variant="brand" size="lg" className="w-full" disabled={isSubmitting}>
               {isSignUp ? 'Sign up' : 'Sign in'}
             </Button>
           </form>
