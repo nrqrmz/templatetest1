@@ -48,6 +48,7 @@ All code, comments, commit messages and UI text must be in English.
 - Style with Tailwind classes only. No separate CSS unless strictly necessary.
 - Import with the `@/` alias (maps to `src/`).
 
-## The example is temporary
-The example pages (home, `/items/:id`, 404) only demonstrate dynamic routes.
-Replace or delete them when building the real app.
+## The app
+Job Tracker: users sign up with email/password and manage their job applications and tasks.
+Tables `applications` and `tasks` (see `supabase/migrations/`) are protected by RLS per user.
+Routes: `/` (sign in/up), `/applications`, `/applications/:id`, `/tasks`; all except `/` require sign-in.
