@@ -2,7 +2,6 @@ import { useEffect } from 'react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
-import { z } from 'zod'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -18,16 +17,8 @@ import { Label } from '@/components/ui/label'
 import { Select } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
 import { supabase } from '@/lib/supabase'
+import { applicationSchema, type ApplicationValues } from '@/lib/schemas'
 import { STATUSES, type Application } from '@/lib/types'
-
-const schema = z.object({
-  company: z.string().trim().min(1, 'Company is required').max(200, 'Max 200 characters'),
-  position: z.string().trim().min(1, 'Position is required').max(200, 'Max 200 characters'),
-  status: z.enum(STATUSES),
-  applied_on: z.string().min(1, 'Application date is required'),
-  notes: z.string().max(5000, 'Max 5000 characters'),
-})
-type FormValues = z.infer<typeof schema>
 
 const today = () => new Date().toLocaleDateString('en-CA') // YYYY-MM-DD in local time
 
@@ -45,7 +36,7 @@ export function ApplicationFormDialog({ open, onOpenChange, application, onSaved
     handleSubmit,
     reset,
     formState: { errors, isSubmitting },
-  } = useForm<FormValues>({ resolver: zodResolver(schema) })
+  } = useForm<ApplicationValues>({ resolver: zodResolver(applicationSchema) })
 
   useEffect(() => {
     if (!open) return
@@ -58,7 +49,7 @@ export function ApplicationFormDialog({ open, onOpenChange, application, onSaved
     })
   }, [open, application, reset])
 
-  async function onSubmit(values: FormValues) {
+  async function onSubmit(values: ApplicationValues) {
     const row = { ...values, notes: values.notes.trim() || null }
     // user_id is not sent: the database fills it in with auth.uid().
     const { error } = application

@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { toast } from 'sonner'
 
 import { ApplicationFormDialog } from '@/components/ApplicationFormDialog'
+import { ImportApplicationsDialog } from '@/components/ImportApplicationsDialog'
 import { StatusBadge } from '@/components/StatusBadge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
@@ -13,6 +14,7 @@ import type { Application } from '@/lib/types'
 export default function ApplicationsPage() {
   const [applications, setApplications] = useState<Application[] | null>(null)
   const [creating, setCreating] = useState(false)
+  const [importing, setImporting] = useState(false)
 
   const load = useCallback(async () => {
     // RLS limits this to the signed-in user's rows.
@@ -37,7 +39,12 @@ export default function ApplicationsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold tracking-tight">Applications</h1>
-        <Button onClick={() => setCreating(true)}>New application</Button>
+        <div className="flex gap-2">
+          <Button variant="outline" onClick={() => setImporting(true)}>
+            Import CSV
+          </Button>
+          <Button onClick={() => setCreating(true)}>New application</Button>
+        </div>
       </div>
 
       {applications === null ? (
@@ -67,6 +74,7 @@ export default function ApplicationsPage() {
         </div>
       )}
 
+      <ImportApplicationsDialog open={importing} onOpenChange={setImporting} onImported={load} />
       <ApplicationFormDialog open={creating} onOpenChange={setCreating} onSaved={load} />
     </div>
   )
