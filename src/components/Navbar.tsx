@@ -32,6 +32,9 @@ export function Navbar() {
         {session && (
           <>
             <nav className="flex items-center gap-4">
+              <NavLink to="/dashboard" className={linkClass}>
+                Dashboard
+              </NavLink>
               <NavLink to="/applications" className={linkClass}>
                 Applications
               </NavLink>

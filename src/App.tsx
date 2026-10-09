@@ -1,3 +1,4 @@
+import { lazy, Suspense } from 'react'
 import { Outlet, Route, Routes } from 'react-router-dom'
 
 import { Navbar } from '@/components/Navbar'
@@ -9,6 +10,9 @@ import ApplicationsPage from '@/pages/ApplicationsPage'
 import HomePage from '@/pages/HomePage'
 import NotFoundPage from '@/pages/NotFoundPage'
 import TasksPage from '@/pages/TasksPage'
+
+// Loaded on demand so the charting library stays out of the main bundle.
+const DashboardPage = lazy(() => import('@/pages/DashboardPage'))
 
 function Layout() {
   return (
@@ -30,6 +34,14 @@ export default function App() {
         <Route element={<Layout />}>
           <Route path="/" element={<HomePage />} />
           <Route element={<RequireAuth />}>
+            <Route
+              path="/dashboard"
+              element={
+                <Suspense fallback={<p className="text-muted-foreground">Loading...</p>}>
+                  <DashboardPage />
+                </Suspense>
+              }
+            />
             <Route path="/applications" element={<ApplicationsPage />} />
             <Route path="/applications/:id" element={<ApplicationDetailPage />} />
             <Route path="/tasks" element={<TasksPage />} />

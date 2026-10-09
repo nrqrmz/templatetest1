@@ -51,4 +51,4 @@ All code, comments, commit messages and UI text must be in English.
 ## The app
 Job Tracker: users sign up with email/password and manage their job applications and tasks.
 Tables `applications` and `tasks` (see `supabase/migrations/`) are protected by RLS per user.
-Routes: `/` (sign in/up), `/applications`, `/applications/:id`, `/tasks`; all except `/` require sign-in.
+Routes: `/` (sign in/up), `/dashboard` (stats, Recharts), `/applications`, `/applications/:id`, `/tasks`; all except `/` require sign-in.
