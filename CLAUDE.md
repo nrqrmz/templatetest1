@@ -58,3 +58,10 @@ Indigo/violet theme defined by the color tokens in `src/index.css` (light and da
 class on `<html>` is toggled by `ThemeToggle`). Use the tokens (`bg-primary`, `text-muted-foreground`...)
 instead of hard-coded colors. Status colors live in `src/lib/status.ts`. The main call-to-action
 button uses `<Button variant="brand">`.
+
+## Kanban board
+`/applications` shows a Board (default) or a Grid, remembered in `localStorage`. The board
+(`src/components/KanbanBoard.tsx`, lazy-loaded, `@dnd-kit`) has one column per status; dragging a card
+updates `status` and `sort_order`. `sort_order` (a decimal) orders cards inside a column; a drop saves the
+midpoint between the two neighbours (`planMove` in `src/lib/board.ts`), so only one row is updated.
+Note the `applications.position` column is the job title, not an order: do not confuse it with `sort_order`.

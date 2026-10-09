@@ -9,6 +9,7 @@ import { ViewToggle, type View } from '@/components/ViewToggle'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
+import type { Move } from '@/lib/board'
 import { supabase } from '@/lib/supabase'
 import type { Application } from '@/lib/types'
 
@@ -59,6 +60,13 @@ export default function ApplicationsPage() {
     load()
   }, [load])
 
+  // Keep this page's copy in sync with a drag that was just saved.
+  const applyMoves = useCallback((moves: Move[]) => {
+    setApplications((current) =>
+      current ? current.map((a) => ({ ...a, ...moves.find((m) => m.id === a.id) })) : current,
+    )
+  }, [])
+
   return (
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
@@ -101,7 +109,7 @@ export default function ApplicationsPage() {
           <ViewToggle value={view} onChange={changeView} />
           {view === 'board' ? (
             <Suspense fallback={<Skeleton className="h-64 w-full rounded-2xl" />}>
-              <KanbanBoard applications={applications} />
+              <KanbanBoard applications={applications} onMoved={applyMoves} onReload={load} />
             </Suspense>
           ) : (
             <ApplicationGrid applications={applications} />

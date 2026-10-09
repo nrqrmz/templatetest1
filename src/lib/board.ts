@@ -21,6 +21,11 @@ export interface SortUpdate {
   sort_order: number
 }
 
+/** A change to save: the new order and, for the dragged card only, its new status. */
+export interface Move extends SortUpdate {
+  status?: Status
+}
+
 /**
  * Works out what to save after the card `id` was dropped into `column` (the column as it looks now,
  * with the card already in its new place). Normally that is a single row: the card gets the midpoint
