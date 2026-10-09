@@ -1,6 +1,7 @@
 import { Link, NavLink, useNavigate } from 'react-router-dom'
 import { toast } from 'sonner'
 
+import { ThemeToggle } from '@/components/ThemeToggle'
 import { Button } from '@/components/ui/button'
 import { useAuth } from '@/lib/auth'
 import { supabase } from '@/lib/supabase'
@@ -42,11 +43,16 @@ export function Navbar() {
                 Tasks
               </NavLink>
             </nav>
-            <Button variant="outline" size="sm" className="ml-auto" onClick={signOut}>
-              Sign out
-            </Button>
           </>
         )}
+        <div className="ml-auto flex items-center gap-2">
+          <ThemeToggle />
+          {session && (
+            <Button variant="outline" size="sm" onClick={signOut}>
+              Sign out
+            </Button>
+          )}
+        </div>
       </div>
     </header>
   )
